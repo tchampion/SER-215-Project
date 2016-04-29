@@ -33,6 +33,7 @@ public class GuiPlayerPanel extends JPanel
 	public JLabel playerName;
 	public JLabel cards;
 	public JLabel handValue;
+	private Player player;
 	
 
 	/**
@@ -42,6 +43,7 @@ public class GuiPlayerPanel extends JPanel
 	 */
 	public GuiPlayerPanel(Player player){
 		
+		this.setPlayer(player);
 		SpinnerNumberModel bets = new SpinnerNumberModel(5,5,player.getFunds(),5);
 		JSpinner bet = new JSpinner(bets);
 		JButton submitBet = new JButton("Submit Bet");
@@ -58,9 +60,18 @@ public class GuiPlayerPanel extends JPanel
 			
 				final int betValue = (int) bet.getValue();
 				player.getCurrentCards(0).setBet(betValue);
-				System.out.println("Bet is set to " + betValue);
+				BlackJackGame.gui.setBetReceived(BlackJackGame.gui.getBetReceived() + 1);
+				remove(submitBet);
+				updateUI();
+				//BlackJackGame.gui.setVisible(true);
 				
-				play(player);
+				System.out.println(BlackJackGame.gui.getBetReceived() + " and " + BlackJackGame.gui.getAllBetsReceived());
+				
+				if(BlackJackGame.gui.getAllBetsReceived() == BlackJackGame.gui.getBetReceived()){
+					
+					BlackJackGame.gui.play();
+				}
+				
 				
 			}
 			
@@ -98,7 +109,7 @@ public class GuiPlayerPanel extends JPanel
 		this.add(standButton);
 		this.add(doubleButton);
 		this.add(splitButton);
-		testing.gui.refresh();
+		
 		
 		hitButton.addActionListener(new ActionListener(){
 
@@ -106,6 +117,7 @@ public class GuiPlayerPanel extends JPanel
 			public void actionPerformed(ActionEvent arg0) {
 				player.hit(0);
 				play(player);
+				updateUI();
 			}
 			
 		});
@@ -116,6 +128,7 @@ public class GuiPlayerPanel extends JPanel
 			public void actionPerformed(ActionEvent arg0) {
 				player.stand(0);
 				play(player);
+				updateUI();
 			}
 			
 		});
@@ -126,6 +139,7 @@ public class GuiPlayerPanel extends JPanel
 			public void actionPerformed(ActionEvent arg0) {
 				player.doubleDown(0);
 				play(player);
+				updateUI();
 			}
 			
 		});
@@ -136,10 +150,19 @@ public class GuiPlayerPanel extends JPanel
 			public void actionPerformed(ActionEvent arg0) {
 				player.split(0);
 				play(player);
+				updateUI();
 			}
 			
 		});
 
+	}
+
+	public Player getPlayer() {
+		return player;
+	}
+
+	public void setPlayer(Player player) {
+		this.player = player;
 	}
 
 }

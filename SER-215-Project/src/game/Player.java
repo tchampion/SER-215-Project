@@ -89,10 +89,12 @@ public class Player
 		handCount++;
 		for(int i = 0 ; i < handCount-1 ; i++)
 			temp[i] = currentCards[i];
+		Hand temp2 = new Hand(bet);
+		temp[handNumber+1] = temp2;
 		temp[handNumber+1].addCard(temp[handNumber].getCard(1));
 		temp[handNumber].setCard(1,BlackJackGame.deck.deal());
 		temp[handNumber+1].addCard(BlackJackGame.deck.deal());
-		temp[handNumber+1].setBet(bet);
+
 		currentCards = temp;
 		
 	}

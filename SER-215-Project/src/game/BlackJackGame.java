@@ -1,6 +1,6 @@
-package Blackjack.src.main.java.model;
+package game;
 
-
+import java.util.Scanner;
 
 /**
  * <!-- begin-user-doc -->
@@ -10,36 +10,10 @@ package Blackjack.src.main.java.model;
 
 public class BlackJackGame
 {
+	public Player[] players;
 	public static Deck deck = new Deck();
-	
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!--  end-user-doc  -->
-	 * @generated
-	 * @ordered
-	 */
-	
 	public Hand dealerHand;
-
-
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!--  end-user-doc  -->
-	 * @generated
-	 * @ordered
-	 */
-	
-	public Gui gui;
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!--  end-user-doc  -->
-	 * @generated
-	 * @ordered
-	 */
-	
+	public static Gui gui = new Gui();
 	public Hand hand;
 
 	/**
@@ -47,57 +21,23 @@ public class BlackJackGame
 	 * <!--  end-user-doc  -->
 	 * @generated
 	 */
-	public BlackJackGame(){
-		super();
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!--  end-user-doc  -->
-	 * @generated
-	 * @ordered
-	 */
 	
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!--  end-user-doc  -->
-	 * @generated
-	 * @ordered
-	 */
 	
-	public void newGame() {
-		// TODO implement me
+	
+	public static void dealTable(Player[] player){
+		
+		
+		for(int i = 0 ; i < player.length ; i++){
+			Hand hand = new Hand(5);			
+			hand.addCard(deck.deal());
+			hand.addCard(deck.deal());
+			player[i].setCurrentCards(hand, 0);
+		}
+		gui.bet(player);
 	}
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!--  end-user-doc  -->
-	 * @generated
-	 * @ordered
-	 */
 	
-	public void addPlayer(Player parameter) {
-		// TODO implement me
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!--  end-user-doc  -->
-	 * @generated
-	 * @ordered
-	 */
-	
-	public void removePlayer(Player parameter) {
-		// TODO implement me
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!--  end-user-doc  -->
-	 * @generated
-	 * @ordered
-	 */
 	
 	public boolean winner(Player parameter) {
 		// TODO implement me
@@ -115,13 +55,7 @@ public class BlackJackGame
 		// TODO implement me
 	}
 	
-	/**
-	 * Creates a deck of cards
-	 * 
-	 * 
-	 * @author Terin Champion
-	 * @version 1.0
-	 */
+	
 
 	
 
