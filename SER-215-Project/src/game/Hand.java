@@ -35,12 +35,26 @@ public class Hand
 		
 		
 		if(handValue > 21){
+			resetHandValue();
 			for(int i = 0 ; i < hand.length ; i++){
 				if(hand[i].getFaceValue() == 0)
 					handValue = handValue - 10;
 				if(handValue < 21)
-					break;		
+					break;	
+				
 			}
+		}
+	}
+	
+	public void resetHandValue(){
+		handValue = 0;
+		for(int i = 0 ; i< hand.length ; i++){
+			if(hand[i].getFaceValue() == 0)
+				handValue = handValue + 11;
+			else if(hand[i].getFaceValue() == 10 || hand[i].getFaceValue() == 11 || hand[i].getFaceValue() == 12)
+				handValue = handValue + 10;
+			else
+				handValue = handValue + hand[i].getFaceValue()+1;
 		}
 	}
 	

@@ -12,7 +12,16 @@ public class Player
 	private String name;
 	private int funds;
 	private Hand[] currentCards = new Hand[1];
+	private boolean turnover = false;
 	
+
+	public boolean isTurnover() {
+		return turnover;
+	}
+
+	public void setTurnover(boolean turnover) {
+		this.turnover = turnover;
+	}
 
 	private int handCount = 1;
 
@@ -48,8 +57,8 @@ public class Player
 		return funds;
 	}
 
-	public void setFunds(int funds) {
-		this.funds = funds;
+	public void setFunds(int d) {
+		this.funds = d;
 	}
 
 	public int getHandCount() {
@@ -68,6 +77,11 @@ public class Player
 		this.currentCards[handNumber] = currentCards;
 		
 	}
+	
+	public void setCurrentCards(Hand[] currentCards) {
+		this.currentCards = currentCards;
+		
+	}
 	/**
 	 * Player Chooses to Double Down.  1 card added to hand and bet is doubled.
 	 * @param int handNumber
@@ -77,6 +91,7 @@ public class Player
 		int bet = currentCards[handNumber].getBet();
 		currentCards[handNumber].setBet(bet*2);
 		currentCards[handNumber].addCard(BlackJackGame.deck.deal());
+		turnover = true;
 	}
 
 	/**
@@ -105,6 +120,8 @@ public class Player
 	public void hit(int handNumber) {
 		Card card = BlackJackGame.deck.deal();
 		currentCards[handNumber].addCard(card);
+		if(currentCards[handNumber].getHandValue() > 21)
+			turnover = true;
 	}
 
 	/**
@@ -112,7 +129,7 @@ public class Player
 	 */
 	
 	public void stand(int handNumber) {
-		//turn over
+		turnover = true;
 	}
 
 

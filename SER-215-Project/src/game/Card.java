@@ -27,38 +27,38 @@ public class Card
 			faceValue = faceInput;
 		switch(suitValue){
 		case 0:
-			suit = "Spades";
+			suit = "spades";
 			break;
 		case 1:
-			suit = "Clubs";
+			suit = "clubs";
 			break;
 		case 2:
-			suit = "Diamonds";
+			suit = "diamonds";
 			break;
 		case 3:
-			suit = "Hearts";
+			suit = "hearts";
 			break;
 		}//end of suit switch
 		switch(faceValue){
 		case 0:
-			face = "Ace";
+			face = "ace";
 			break;
 		case 10:
-		    face = "Jack";
+		    face = "jack";
 		    break;
 		case 11:
-			face = "Queen";
+			face = "queen";
 			break;
 		case 12:
-			face = "King";
+			face = "king";
 			break;
 		default:
 			face = "" + (faceValue+1);
 			break;
 		}//end of face switch	
 		
-		cardImageFront = new ImageIcon("src/images/" + face + "_of_" + suit + ".png");
-		cardImageBack = new ImageIcon("src/images/back.png");
+		cardImageFront = new ImageIcon(getClass().getResource("/images/" + face + "_of_" + suit + ".png"));
+		cardImageBack = new ImageIcon(getClass().getResource("/images/back.png"));
 		
 	}//end of constructor	
 	

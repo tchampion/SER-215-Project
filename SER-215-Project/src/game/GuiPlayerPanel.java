@@ -1,6 +1,8 @@
 package game;
 
 import java.awt.BorderLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -9,6 +11,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
@@ -44,6 +47,11 @@ public class GuiPlayerPanel extends JPanel
 	public GuiPlayerPanel(Player player){
 		
 		this.setPlayer(player);
+		this.setSize(1200, 700);
+		if(player.getFunds() < 1){
+			JOptionPane.showMessageDialog(BlackJackGame.gui,new JLabel(player.getName() + " is out of funds.  Pull $1000 from ATM to try to win it back?"));
+			player.setFunds(player.getFunds() + 1000);
+		}
 		SpinnerNumberModel bets = new SpinnerNumberModel(5,5,player.getFunds(),5);
 		JSpinner bet = new JSpinner(bets);
 		JButton submitBet = new JButton("Submit Bet");
@@ -63,9 +71,9 @@ public class GuiPlayerPanel extends JPanel
 				BlackJackGame.gui.setBetReceived(BlackJackGame.gui.getBetReceived() + 1);
 				remove(submitBet);
 				updateUI();
-				//BlackJackGame.gui.setVisible(true);
 				
-				System.out.println(BlackJackGame.gui.getBetReceived() + " and " + BlackJackGame.gui.getAllBetsReceived());
+				
+				
 				
 				if(BlackJackGame.gui.getAllBetsReceived() == BlackJackGame.gui.getBetReceived()){
 					
@@ -81,35 +89,76 @@ public class GuiPlayerPanel extends JPanel
 	
 	public void play(Player player){
 		
-		System.out.println("Gets Here");
-		Hand hand1 = player.getCurrentCards(0);
-		Card[] card = hand1.getHand();
+
 		ImageIcon image;
 		
-		this.removeAll();
-		setLayout(new GridLayout(2,1));
-		this.add(playerName);
+		
+		removeAll();
+		setLayout(new GridBagLayout());
+		GridBagConstraints c = new GridBagConstraints();
+		this.setSize(1200, 700);
+		c.anchor = GridBagConstraints.SOUTH;
+		c.gridx = 0;
+		c.gridy = 0;
+		add(playerName,c);
+		
+		
+		
+		
 		
 		for(int j = 0 ; j < player.getHandCount() ; j++){
-			for(int i = 0 ; i < card.length ; i++){
-				image = card[i].getCardImageFront();
+			JLabel betAmount = new JLabel("Hand Bet Amount: $" + player.getCurrentCards(0).getBet());
+			c.gridy = (j+1) * ((int) player.getHandCount() + 1);
+			add(betAmount,c);
+			Card[] hand = player.getCurrentCards(j).getHand();
+			for(int i = 0 ; i < hand.length ; i++){			
+				image = hand[i].getCardImageFront();
 				cards = new JLabel(image);
-				this.add(cards);
+				c.gridy = (j+1) * ((int) player.getHandCount() + 2);
+				c.gridx = i;
+				add(cards,c);
 			}
-			handValue = new JLabel("" + player.getCurrentCards(j).getHandValue());
-			this.add(handValue);
+			handValue = new JLabel("Hand Value: " + player.getCurrentCards(j).getHandValue());
+			c.gridy = (j+1) * ((int) player.getHandCount() + 3);
+			c.gridx = 0;
+			add(handValue,c);
 		}
 		
 		hitButton = new JButton("Hit");
 		standButton = new JButton("Stand");
 		doubleButton = new JButton("Double Down");
 		splitButton = new JButton("Split");
+		splitButton.setVisible(false);
 		
-		this.add(hitButton);
-		this.add(standButton);
-		this.add(doubleButton);
-		this.add(splitButton);
+		if(player.isTurnover()){
+			hitButton.setVisible(false);
+			standButton.setVisible(false);
+			splitButton.setVisible(false);
+			doubleButton.setVisible(false);
+		}
 		
+		JLabel funds = new JLabel("Total Funds: $" + player.getFunds());
+		c.gridy = ((4*player.getHandCount()) + 3);
+		add(funds,c);
+		
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.gridwidth = 5;
+		c.gridx = 0;
+		c.gridy = ((4*player.getHandCount()) + 4);
+		c.anchor = GridBagConstraints.PAGE_END;
+		add(hitButton,c);
+		
+		c.gridx = 10;
+		add(standButton,c);
+		
+		c.gridx = 0;
+		c.gridy = ((4*player.getHandCount()) + 5);
+		add(doubleButton,c);
+		
+		c.gridx = 10;
+		add(splitButton,c);
+		
+		BlackJackGame.gui.handOver();
 		
 		hitButton.addActionListener(new ActionListener(){
 

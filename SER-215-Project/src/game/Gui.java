@@ -1,13 +1,13 @@
 package game;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -23,14 +23,62 @@ public class Gui extends JFrame
 	private int nameSubmitCount;
 	private int betReceived;
 	private int allBetsReceived;
+	private int numPlayers;
 	private GuiDealerPanel dealer;
 	private GuiPlayerPanel[] eachPlayer;
+	
+
 	private JPanel playerPanel;
+	private JPanel p = new JPanel(new GridBagLayout());
+	private	GridBagConstraints c = new GridBagConstraints();
 	/**
 	 * Displays credits to the screen
 	 */
 	public void displayCredits(){
-		//add credits screen
+		ImageIcon credits = new ImageIcon(getClass().getResource("/images/splash.png"));
+		JLabel l = new JLabel(credits);
+		p.add(l);
+		this.add(p);
+		
+		this.setTitle("Blackjack");	
+	    this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	    this.setSize(1200,900);
+	    this.setVisible(true);
+	    
+		l.addMouseListener(new MouseListener(){
+
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				numPlayers();
+				p.remove(l);
+				p.updateUI();
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void mouseExited(MouseEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void mousePressed(MouseEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+		});
 	}
 	
 	/**
@@ -38,8 +86,7 @@ public class Gui extends JFrame
 	 */
 	public void numPlayers(){
 		
-		JPanel p = new JPanel(new GridBagLayout());
-		GridBagConstraints c = new GridBagConstraints();
+		
 		
 		JLabel l = new JLabel("Select Number of Players:");
 		Integer[] choices = {1,2,3,4};
@@ -48,26 +95,27 @@ public class Gui extends JFrame
 		
 		c.gridx = 0;
 		c.gridy = 0;
-		p.add(l,c);
+		getP().add(l,c);
 		
 		c.gridy = 1;
-		p.add(cb1,c);
+		getP().add(cb1,c);
 		
 		c.gridy = 2;
-		p.add(numSubmit,c);
+		getP().add(numSubmit,c);
 		
 		numSubmit.addActionListener(new ActionListener(){
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				int numPlayers = (int)cb1.getSelectedItem();
+				numPlayers = (int)cb1.getSelectedItem();
+				getP().removeAll();
 				getPlayerNames(numPlayers);				
-				remove(p);
+				getP().updateUI();
 			}
 			
 		});
 		
-		this.add(p);
+		this.add(getP());
 		
 		
 		
@@ -91,28 +139,22 @@ public class Gui extends JFrame
 		nameSubmitCount = 1;
 		
 		
-			
-		
-			JPanel p = new JPanel(new GridBagLayout());
-			GridBagConstraints c = new GridBagConstraints();
-		
-		
 			JLabel l = new JLabel("Enter each player name");
 			JTextField tf = new JTextField(20);
 			JButton submit = new JButton("Submit");
 			
 			c.gridx = 0;
 			c.gridy = 0;
-			p.add(l,c);
+			getP().add(l,c);
 			
 			c.gridy = 1;
-			p.add(tf,c);
+			getP().add(tf,c);
 			
 			c.gridy = 2;
-			p.add(submit,c);
+			getP().add(submit,c);
 		
 		
-			this.add(p);
+			
 			
 		
 			this.setTitle("Blackjack");	
@@ -129,9 +171,12 @@ public class Gui extends JFrame
 					players[nameSubmitCount] = new Player(playerName);
 					nameSubmitCount++;
 
-					if(nameSubmitCount == numPlayers+1){	
-						BlackJackGame.dealTable(players);
-						remove(p);	
+					if(nameSubmitCount == numPlayers+1){
+						getP().removeAll();
+						remove(p);
+						add(p);
+						BlackJackGame.game.dealTable(players);
+						getP().updateUI();
 						
 					}
 						
@@ -146,8 +191,9 @@ public class Gui extends JFrame
 		allBetsReceived = player.length-1;
 		setBetReceived(0);
 		
-		dealer = new GuiDealerPanel(player[0]);
+		dealer = new GuiDealerPanel();
 		eachPlayer = new GuiPlayerPanel[player.length-1];
+		
 		
 		for(int i = 1 ; i < player.length ; i++){
 			GuiPlayerPanel add = new GuiPlayerPanel(player[i]);
@@ -168,13 +214,17 @@ public class Gui extends JFrame
 			
 		}
 		
-
-		this.add(playerPanel);
-		
+		getP().removeAll();
+			c.anchor = GridBagConstraints.SOUTH;
+		getP().add(playerPanel, c);
+		this.add(getP());
 		this.setTitle("Blackjack");	
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.setSize(1200,900);
-		this.setVisible(true);
+	    this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	    this.setSize(1200,900);
+	    this.setVisible(true);
+		
+		
+		
 		
 		
 		
@@ -185,17 +235,37 @@ public class Gui extends JFrame
 		for(int i = 0 ; i < eachPlayer.length ; i++){
 			eachPlayer[i].play(eachPlayer[i].getPlayer());
 		}
+		getP().removeAll();
 		
-		this.add(dealer, BorderLayout.NORTH);
 		
-		this.add(playerPanel, BorderLayout.SOUTH);
-
-		this.setTitle("Blackjack");
-	    this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	    this.setSize(1200, 900);
-	    this.setVisible(true);
+		c.gridx = 0;
+		c.gridy = 0;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.anchor = GridBagConstraints.NORTH;
+		getP().add(getDealer(), c);
+		
+		c.weighty = .8;
+		c.gridy = 1;
+		c.gridheight = 10;
+		c.weighty = .5;
+		c.anchor = GridBagConstraints.SOUTH;
+		
+		getP().add(getPlayerPanel(),c);
+		p.updateUI();
+		
 	}
 	
+	public void handOver(){
+		boolean handOver = true;
+		for(int i = 0 ; i < eachPlayer.length;  i++){
+			if(!eachPlayer[i].getPlayer().isTurnover())
+				handOver = false;
+		}
+		if(handOver)
+			BlackJackGame.game.dealerTurn();
+	}
+	
+
 
 	public int getBetReceived() {
 		return betReceived;
@@ -212,8 +282,61 @@ public class Gui extends JFrame
 	public void setAllBetsReceived(int allBetsReceived) {
 		this.allBetsReceived = allBetsReceived;
 	}
-	
 
+	public JPanel getPlayerPanel() {
+		return playerPanel;
+	}
+
+	public void setPlayerPanel(JPanel playerPanel) {
+		this.playerPanel = playerPanel;
+	}
+
+	public GuiDealerPanel getDealer() {
+		return dealer;
+		
+	}
+
+	public void setDealer(GuiDealerPanel dealer) {
+		this.dealer = dealer;
+	}
+
+	public JPanel getP() {
+		return p;
+	}
+
+	public void setP(JPanel p) {
+		this.p = p;
+	}
+	
+	public GuiPlayerPanel[] getEachPlayer() {
+		return eachPlayer;
+	}
+
+	public void setEachPlayer(GuiPlayerPanel[] eachPlayer) {
+		this.eachPlayer = eachPlayer;
+	}
+
+	public void refresh(){
+		getP().removeAll();
+		
+		
+		c.gridx = 0;
+		c.gridy = 0;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.anchor = GridBagConstraints.NORTH;
+		getP().add(dealer, c);
+		
+		c.weighty = .8;
+		c.gridy = 1;
+		c.gridheight = 10;
+		c.weighty = .5;
+		c.anchor = GridBagConstraints.SOUTH;
+		
+		getP().add(getPlayerPanel(),c);
+		p.updateUI();
+		this.setVisible(true);
+
+	}
 	
 
 
